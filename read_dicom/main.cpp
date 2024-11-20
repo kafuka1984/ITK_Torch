@@ -33,7 +33,8 @@ std::tuple<std::vector<PixelType>, ImageType::SpacingType, ImageType::PointType,
         const SeriesIdContainer &seriesUID = nameGenerator->GetSeriesUIDs();
         auto seriesItr = seriesUID.begin();
         auto seriesEnd = seriesUID.end();
-
+        std::cout << "Series " << *seriesItr << std::endl;
+        // std::cout << "Series " << *seriesEnd << std::endl;
         if (seriesItr == seriesEnd)
         {
             std::cerr << "No DICOMs in: " << dirName << std::endl;
@@ -48,13 +49,14 @@ std::tuple<std::vector<PixelType>, ImageType::SpacingType, ImageType::PointType,
         std::cout << "Reading series: " << seriesIdentifier << std::endl;
 
         using FileNamesContainer = std::vector<std::string>;
-        FileNamesContainer fileNames = nameGenerator->GetFileNames(seriesIdentifier);
+        FileNamesContainer fileNames = nameGenerator->GetFileNames(*seriesItr);
 
         using ReaderType = itk::ImageSeriesReader<ImageType>;
         auto reader = ReaderType::New();
         using ImageIOType = itk::GDCMImageIO;
         auto dicomIO = ImageIOType::New();
         reader->SetImageIO(dicomIO);
+        // std::cout << "fileNames: " << fileNames << std::endl;
         reader->SetFileNames(fileNames);
         reader->ForceOrthogonalDirectionOff(); // properly read CTs with gantry tilt
 
